@@ -2,14 +2,20 @@
   "name": "loanapp",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "playwright test",
+    "format": "prettier --write \"tests/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "check": "prettier --check \"tests/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "lint": "eslint \"tests/**/*.{ts,tsx,js,jsx}\""
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
     "@playwright/test": "^1.55.0",
-    "@types/node": "^24.1.0"
+    "@types/node": "^24.1.0",
+    "prettier": "^3.6.2"
   },
   "dependencies": {
     "dotenv": "^17.2.1"

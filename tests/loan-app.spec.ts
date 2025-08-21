@@ -1,0 +1,37 @@
+import { test, expect } from '@playwright/test';
+import { LoanPage } from './pages/loan-page';
+import { LoanDetailPage } from './pages/loan-detail-page';
+
+let loanPage: LoanPage;
+
+test.beforeEach(async ({ page }) => {
+  loanPage = new LoanPage(page);
+  await loanPage.openLoanPage();
+});
+
+test('Base elements are visible', async () => {
+  await expect.soft(loanPage.amountInput).toBeVisible();
+  await expect.soft(loanPage.periodSelect).toBeVisible();
+  await expect.soft(loanPage.applyButton).toBeVisible();
+  await expect.soft(loanPage.amountSlider).toBeVisible();
+  await expect.soft(loanPage.periodSlider).toBeVisible();
+});
+
+test('Get loan apply for 1000 euro for 24 months', async ({ page }) => {
+  await loanPage.amountInput.fill('1000');
+  await loanPage.periodSelect.selectOption('24');
+  await loanPage.monthlyAmountText.waitFor({ state: 'visible', timeout: 4000 });
+  await loanPage.login();
+  const loanDetailPage = new LoanDetailPage(page);
+  const finalAmountText = await loanDetailPage.finalAmount.textContent();
+  const finalMonthlyPaymentText = await loanDetailPage.finalMonthlyPayment.textContent();
+  const finalPeriodText = await loanDetailPage.finalPeriod.textContent();
+  expect.soft(finalAmountText).toBe('1000 €');
+  expect.soft(finalMonthlyPaymentText).toBe('43.87 €');
+  expect.soft(finalPeriodText).toBe('24 months');
+});
+
+test('Scroll and viewport are visible elements', async () => {
+  await loanPage.applyLoanButton2.scrollIntoViewIfNeeded();
+  await expect.soft(loanPage.applyLoanButton2).toBeInViewport();
+});
